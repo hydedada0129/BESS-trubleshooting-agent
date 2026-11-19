@@ -144,3 +144,8 @@ Decisions agreed during the v1 design review. Each entry: decision, why, alterna
 ### D-28 Milestone order with privacy first
 - **Decision:** M0 Spike 0 → M1 LLMClient → M2 cases → M3 privacy → M4 retrieval → M5 agent → M6 eval → M7 API/CLI → post-v1 Docker/MCP.
 - **Why:** Privacy controls must exist before any cloud call with real data; Spike 0 first because it decides the local model's scope.
+
+### D-30 Spike 0 calls Ollama directly
+- **Decision:** `spikes/spike0_tool_calling/` calls Ollama's `/api/chat` directly instead of going through `LLMClient`. Production code never imports from `spikes/`.
+- **Why:** `LLMClient` does not exist until M1, and the spike's results should inform its design (e.g. tool-call validation and retries).
+- **Alternatives:** Build M1 first (spike results could no longer shape the interface).
