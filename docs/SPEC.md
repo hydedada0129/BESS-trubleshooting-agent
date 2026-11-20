@@ -53,14 +53,18 @@ Primary persona: remote technical support engineer triaging a fault from a descr
 
 ### 4.1 Case corpus
 
-- Format: one Markdown file per case with YAML front matter. Language: English. (D-04, D-06)
-- Fields: symptoms, alarm category, component, operating mode, environment, troubleshooting steps, root cause, resolution.
+- Format: one Markdown file per case at `cases/CASE-###.md`, YAML front matter, English, ~300–800 words. (D-04, D-06, D-33)
+- Front matter: `id`, `title`, `symptom_component`, `root_cause_component`, `operating_mode`, `alarm_categories`, `impact` (trip / derate / warning), `source` (synthetic / field_anonymized), `reviewed`.
+- `symptom_component` is where the alarm appears; `root_cause_component` is where the fault actually was. About a third of cases are "misleading" (they differ).
+- Sections: Symptoms, Conditions, Troubleshooting steps, Root cause, Resolution, optional Lessons.
+- Relative values only ("about 5% above rated"), no product-specific numbers. `[SAFETY]` marks steps involving high voltage, batteries or de-energization; safety content comes from the owner.
+- `pytest` validates every case against `config/taxonomy.toml` and scans for IPs, MACs, emails and serial-like codes.
 - Uses generic fault categories only. No vendor manuals, fault code tables, site names, or serial numbers.
 - Authoring workflow (D-04):
   1. Claude drafts cases marked `source: synthetic`, `reviewed: false`.
   2. The owner corrects each against real field experience and sets `reviewed: true`.
   3. Ingest accepts only `reviewed: true` cases.
-- Target size: 30 cases for v1.
+- Target size: 30 cases for v1, drafted in three batches of 10. Every component has at least 3 cases by `root_cause_component`; all operating modes covered.
 
 ### 4.2 Alarm log format
 
@@ -72,10 +76,12 @@ timestamp, device_id, severity, alarm_category, message, value, unit
 
 ### 4.3 Taxonomy (draft, owner to refine)
 
-Used for metadata filtering and as root-cause labels in evaluation. (D-17)
+Single source of truth: `config/taxonomy.toml`. Used for metadata filtering, case validation, log parsing, and as root-cause labels in evaluation (`root_cause_component`). (D-17, D-33)
 
-- Component: DC side, power module (IGBT), AC side / grid, cooling, auxiliary power, communication, BMS interface
-- Operating mode: charging, discharging, standby, startup / shutdown
+- Component: `dc_side`, `power_module`, `ac_grid`, `cooling`, `auxiliary_power`, `communication`, `bms_interface`
+- Operating mode: `charging`, `discharging`, `standby`, `startup_shutdown`
+- Alarm category (shared with the log format): `dc_overvoltage`, `dc_undervoltage`, `dc_overcurrent`, `ac_overcurrent`, `grid_voltage_abnormal`, `grid_frequency_abnormal`, `insulation_fault`, `ground_fault`, `overtemperature`, `fan_fault`, `precharge_failure`, `contactor_fault`, `aux_power_fault`, `comm_loss`, `bms_alarm`
+- Impact: `trip`, `derate`, `warning`
 
 ## 5. Retrieval (RAG)
 

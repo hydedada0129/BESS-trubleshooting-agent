@@ -3,7 +3,7 @@ name = "bess-pcs-agent"
 version = "0.1.0"
 description = "BESS PCS troubleshooting agent"
 requires-python = ">=3.11"
-dependencies = ["httpx>=0.27"]
+dependencies = ["httpx>=0.27", "pyyaml>=6"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "respx>=0.21"]
@@ -13,7 +13,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["llm"]
+packages = ["llm", "kb"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
