@@ -3,3 +3,6 @@
 chroma/
 __pycache__/
 *.db
+traces/
+*.local.*
+*.egg-info/

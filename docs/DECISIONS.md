@@ -45,9 +45,10 @@ Decisions agreed during the v1 design review. Each entry: decision, why, alterna
 
 ## Models and routing
 
-### D-07 Anthropic as first cloud provider, behind `LLMClient`
-- **Decision:** `AnthropicClient` + `OllamaClient`, both implementing `llm/base.py`.
-- **Why:** CLAUDE.md requires interchangeable models; the interface stays provider-neutral.
+### D-07 Kimi as first cloud provider, via an OpenAI-compatible client
+- **Decision:** `OpenAICompatClient` (base URL, model and key from config; default Kimi international endpoint `https://api.moonshot.ai/v1`, key in `MOONSHOT_API_KEY`) + `OllamaClient`, both implementing `llm/base.py`.
+- **Why:** The owner has a Kimi API key, not a Claude one. One OpenAI-compatible client covers Kimi and other compatible providers by configuration. CLAUDE.md requires interchangeable models; the interface stays provider-neutral.
+- **History:** Originally Anthropic (`AnthropicClient`); changed before implementation.
 
 ### D-08 Spike 0 before trusting local tool calling
 - **Decision:** Measure local tool-call validity on 20–30 fixed prompts; require ≥ 95% before letting the local model run multi-step tool loops.
@@ -62,9 +63,10 @@ Decisions agreed during the v1 design review. Each entry: decision, why, alterna
 - **Decision:** Route by task type with fixed rules; no LLM router.
 - **Why:** Deterministic, testable, explainable. Only two task types exist.
 
-### D-18 Cloud model: `claude-sonnet-5-5`, configurable
-- **Decision:** Diagnosis uses Sonnet; the model ID lives in config.
-- **Why:** Balance of reasoning quality and cost; switching models needs no code change.
+### D-18 Cloud model: Kimi K2 series, configurable
+- **Decision:** Diagnosis uses a Kimi K2-series model with tool calling; the exact model ID lives in `config/settings.toml` and is left empty until confirmed from the provider's model list.
+- **Why:** Matches the available API key; switching models needs no code change.
+- **History:** Originally `claude-sonnet-5-5`; changed with D-07.
 
 ### D-22 Agent loop limits
 - **Decision:** Max 6 tool calls, 90 s total; on limit, answer with what is known and set `truncated: true`.
@@ -149,3 +151,11 @@ Decisions agreed during the v1 design review. Each entry: decision, why, alterna
 - **Decision:** `spikes/spike0_tool_calling/` calls Ollama's `/api/chat` directly instead of going through `LLMClient`. Production code never imports from `spikes/`.
 - **Why:** `LLMClient` does not exist until M1, and the spike's results should inform its design (e.g. tool-call validation and retries).
 - **Alternatives:** Build M1 first (spike results could no longer shape the interface).
+
+### D-31 No `AnthropicClient` in M1
+- **Decision:** M1 builds only `OpenAICompatClient` and `OllamaClient`. A shared contract test suite proves they are interchangeable.
+- **Why:** No Claude key to verify against; a mock-only client would be unused code. Add it when a key is available.
+
+### D-32 M1 client design
+- **Decision:** One method `chat(messages, tools, *, max_tokens, temperature) -> LLMResponse`; synchronous, no streaming. Errors normalized to `LLMTimeoutError`, `LLMRateLimitError`, `LLMUnavailableError` (with `retryable`), `LLMResponseError`. Timeouts, 429, 5xx and connection failures are retried with exponential backoff; auth/config errors are not. Unparsable tool arguments set `ToolCall.parse_error` instead of raising; schema validation is optional (`llm/validation.py`). Both clients use `httpx`; tests mock HTTP with `respx`. Settings in `config/settings.toml`, keys only in environment variables or `.env`.
+- **Why:** Small interface is easy to swap; retries are a client concern, fallback is a router concern (D-15); the agent decides how to handle bad tool calls until Spike 0 data exists.

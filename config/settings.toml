@@ -1,0 +1,21 @@
+# Non-secret settings. API keys come only from environment variables (or .env).
+
+[cloud]
+# Any OpenAI-compatible API. Default: Kimi (Moonshot AI) international endpoint.
+base_url = "https://api.moonshot.ai/v1"
+# Exact model ID, left empty until confirmed. List the IDs your account can use:
+#   curl https://api.moonshot.ai/v1/models -H "Authorization: Bearer <your key>"
+model = ""
+api_key_env = "MOONSHOT_API_KEY"
+timeout_s = 30
+max_retries = 2
+backoff_s = 1.0
+
+[local]
+host = "http://localhost:11434"
+model = "qwen3.8:27b"
+num_ctx = 8192
+think = false
+timeout_s = 120
+max_retries = 2
+backoff_s = 1.0

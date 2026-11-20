@@ -46,7 +46,7 @@ Primary persona: remote technical support engineer triaging a fault from a descr
            structured diagnosis (pydantic JSON)
 ```
 
-- All LLM access goes through the `LLMClient` interface in `llm/base.py`. Implementations: `AnthropicClient`, `OllamaClient`. (D-07)
+- All LLM access goes through the `LLMClient` interface in `llm/base.py`. Implementations: `OpenAICompatClient` (cloud, default Kimi), `OllamaClient` (local). (D-07, D-31)
 - Raw logs never leave the machine. Only anonymized summaries and retrieved cases go to the cloud model. (D-19)
 
 ## 4. Data
@@ -105,7 +105,7 @@ Deterministic, rule-based by task type; no LLM router. (D-13)
 |---|---|
 | Log parsing, anonymization | Code (no LLM) |
 | Event summary (single step) | Local: Qwen 27B Q4_K_M via Ollama, context 8k |
-| Diagnosis reasoning + tool loop | Cloud: `claude-sonnet-5-5` (model ID in config) |
+| Diagnosis reasoning + tool loop | Cloud: Kimi K2 series via OpenAI-compatible API (exact model ID in config, to be confirmed) (D-18) |
 
 - Local model scope is limited to single-step, fixed-format tasks until Spike 0 shows tool calling is reliable. (D-08, D-12)
 - Agent loop limits: max 6 tool calls, 90 s total. On limit, answer with available information and set `truncated: true`. (D-22)
@@ -164,8 +164,8 @@ One JSONL trace per run in `traces/` (gitignored): route taken, model, token usa
 
 | ID | Scope | Owner |
 |---|---|---|
-| M0 | Spike 0: measure local tool-calling validity on 20–30 fixed prompts | Claude + owner |
-| M1 | `LLMClient` interface, Anthropic and Ollama clients, pytest skeleton | Claude |
+| M0 | Spike 0: measure local tool-calling validity on 20–30 fixed prompts. **Deferred:** code done, not yet run | Claude + owner |
+| M1 | `LLMClient` interface, OpenAI-compatible (Kimi) and Ollama clients, pytest skeleton | Claude |
 | M2 | Case template, taxonomy, 30 case drafts; owner review | Claude drafts, owner reviews |
 | M3 | `parse_log`, `anonymize`, pre-send check, privacy tests | Claude |
 | M4 | Ingest (Claude), `retrieval.py` (owner) | both |
