@@ -153,13 +153,13 @@ One JSONL trace per run in `traces/` (gitignored): route taken, model, token usa
 
 ## 12. Evaluation
 
-- Eval set: 20 scenarios, separate from the corpus. Each has input (description + log), expected relevant case IDs, expected root-cause category. Drafted by Claude, reviewed by the owner. (D-25)
+- Eval set: 20 scenarios, separate from the corpus. Each has input (description + log), expected relevant case IDs, expected `root_cause_component`. Drafted by Claude, reviewed by the owner. (D-25)
 - Metrics (all deterministic, no LLM-as-judge in v1) (D-26):
 
 | Area | Metric | Target |
 |---|---|---|
 | Retrieval | recall@5, MRR | baseline in M6 |
-| Diagnosis | top-3 root-cause category hit rate (exact match) | baseline in M6 |
+| Diagnosis | top-3 `root_cause_component` hit rate (exact match) | baseline in M6 |
 | Citations | cited IDs ⊆ retrieved IDs | 100% |
 | Privacy | leaks of seeded fake serials/IPs in cloud payloads | 0 |
 | Tool calling | valid call rate (local model) | ≥ 95% to expand local scope |
