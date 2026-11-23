@@ -7,7 +7,7 @@ operating_mode: standby
 alarm_categories: [controller_fault, comm_loss]
 impact: warning
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

@@ -7,7 +7,7 @@ operating_mode: charging
 alarm_categories: [bms_alarm]
 impact: derate
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

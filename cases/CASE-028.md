@@ -7,7 +7,7 @@ operating_mode: standby
 alarm_categories: [ground_fault, insulation_fault]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms
