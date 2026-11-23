@@ -78,7 +78,7 @@ timestamp, device_id, severity, alarm_category, message, value, unit
 
 Single source of truth: `config/taxonomy.toml`. Used for metadata filtering, case validation, log parsing, and as root-cause labels in evaluation (`root_cause_component`). (D-17, D-33)
 
-- Component: `dc_side`, `power_module`, `ac_grid`, `cooling`, `auxiliary_power`, `communication`, `bms_interface`
+- Component: `dc_side`, `power_module`, `ac_grid`, `cooling`, `auxiliary_power`, `communication`, `bms_interface`, `control_system`
 - Operating mode: `charging`, `discharging`, `standby`, `startup_shutdown`
 - Alarm category (shared with the log format): `dc_overvoltage`, `dc_undervoltage`, `dc_overcurrent`, `ac_overcurrent`, `grid_voltage_abnormal`, `grid_frequency_abnormal`, `insulation_fault`, `ground_fault`, `overtemperature`, `fan_fault`, `precharge_failure`, `contactor_fault`, `aux_power_fault`, `comm_loss`, `bms_alarm`
 - Impact: `trip`, `derate`, `warning`

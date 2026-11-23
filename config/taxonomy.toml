@@ -9,6 +9,7 @@ components = [
   "auxiliary_power",
   "communication",
   "bms_interface",
+  "control_system",  # controller, measurement and sensing circuits (D-34)
 ]
 
 operating_modes = ["charging", "discharging", "standby", "startup_shutdown"]

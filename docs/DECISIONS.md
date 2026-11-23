@@ -164,3 +164,9 @@ Decisions agreed during the v1 design review. Each entry: decision, why, alterna
 - **Decision:** Cases live at `cases/CASE-###.md` with front matter `id, title, symptom_component, root_cause_component, operating_mode, alarm_categories, impact, source, reviewed`, fixed sections, relative values only, and `[SAFETY]` markers whose content the owner writes. All categorical values come from `config/taxonomy.toml`. `pytest` validates every case and scans for confidential identifiers. Evaluation's root-cause label is `root_cause_component`. Cases are drafted in batches of 10, about a third "misleading" (symptom and root cause in different components).
 - **Why:** In the field the alarm often appears in one component while the fault is in another; separating the two fields captures that judgement and makes evaluation meaningful. One taxonomy file keeps cases, logs and tools consistent.
 - **Alternatives:** Single `component` field (loses the misleading-alarm distinction); taxonomy duplicated per module (drifts).
+
+### D-34 Add `control_system` component
+- **Decision:** Add `control_system` (controller, measurement and sensing circuits) to the component taxonomy.
+- **Why:** Measurement or control faults (e.g. drifting voltage sensing that produces false grid alarms) had no fitting category, and they are typical misleading cases.
+- **Alternatives:** Fold into `power_module` (hides a distinct root-cause class).
+- **Note:** `spikes/spike0_tool_calling/tools.py` keeps its own frozen copy of the original seven components; spikes are snapshots and are not updated.
