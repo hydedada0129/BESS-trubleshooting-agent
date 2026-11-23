@@ -7,7 +7,7 @@ operating_mode: startup_shutdown
 alarm_categories: [contactor_fault]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

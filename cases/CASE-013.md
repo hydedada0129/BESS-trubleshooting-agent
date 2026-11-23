@@ -7,7 +7,7 @@ operating_mode: charging
 alarm_categories: [grid_frequency_abnormal]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

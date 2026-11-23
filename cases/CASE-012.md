@@ -7,7 +7,7 @@ operating_mode: discharging
 alarm_categories: [ac_overcurrent]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

@@ -7,7 +7,7 @@ operating_mode: discharging
 alarm_categories: [dc_undervoltage, bms_alarm]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

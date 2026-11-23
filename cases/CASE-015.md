@@ -7,7 +7,7 @@ operating_mode: discharging
 alarm_categories: [comm_loss]
 impact: warning
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

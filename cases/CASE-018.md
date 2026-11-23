@@ -7,7 +7,7 @@ operating_mode: discharging
 alarm_categories: [dc_overcurrent, aux_power_fault]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms
