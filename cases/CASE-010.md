@@ -7,7 +7,7 @@ operating_mode: standby
 alarm_categories: [comm_loss, aux_power_fault]
 impact: warning
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

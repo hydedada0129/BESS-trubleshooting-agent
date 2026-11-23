@@ -7,7 +7,7 @@ operating_mode: charging
 alarm_categories: [dc_overvoltage, comm_loss]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

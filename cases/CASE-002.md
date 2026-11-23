@@ -7,7 +7,7 @@ operating_mode: startup_shutdown
 alarm_categories: [precharge_failure, dc_undervoltage]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms

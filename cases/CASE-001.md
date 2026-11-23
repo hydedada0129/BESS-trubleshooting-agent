@@ -7,7 +7,7 @@ operating_mode: discharging
 alarm_categories: [overtemperature]
 impact: trip
 source: synthetic
-reviewed: false
+reviewed: true
 ---
 
 ## Symptoms
