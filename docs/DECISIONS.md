@@ -170,3 +170,7 @@ Decisions agreed during the v1 design review. Each entry: decision, why, alterna
 - **Why:** Measurement or control faults (e.g. drifting voltage sensing that produces false grid alarms) had no fitting category, and they are typical misleading cases.
 - **Alternatives:** Fold into `power_module` (hides a distinct root-cause class).
 - **Note:** `spikes/spike0_tool_calling/tools.py` keeps its own frozen copy of the original seven components; spikes are snapshots and are not updated.
+
+### D-35 Add `controller_fault` alarm category
+- **Decision:** Add `controller_fault` to the alarm categories (controller resets, watchdog, internal control errors).
+- **Why:** Controller-side failures had no matching alarm category; logging them as `comm_loss` hides the real signal.

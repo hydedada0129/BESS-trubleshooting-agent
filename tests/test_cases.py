@@ -68,3 +68,12 @@ def test_validation_reports_problems(tmp_path):
     for expected in ["does not match id", "symptom_component", "made_up", "reviewed must be",
                      "section 'Conditions'", "unknown section 'Extra'", "IPv4"]:
         assert expected in joined, expected
+
+
+def test_corpus_coverage():
+    """SPEC 4.1: every component has >= 3 cases by root cause; all operating modes covered."""
+    cases = load_cases()
+    roots = Counter(c.meta["root_cause_component"] for c in cases)
+    modes = {c.meta["operating_mode"] for c in cases}
+    assert {k: roots[k] for k in TAXONOMY["components"] if roots[k] < 3} == {}
+    assert modes == set(TAXONOMY["operating_modes"])
