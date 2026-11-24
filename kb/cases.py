@@ -13,6 +13,8 @@ from pathlib import Path
 
 import yaml
 
+from privacy.patterns import default_detector
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CASES_DIR = REPO_ROOT / "cases"
 DEFAULT_TAXONOMY = REPO_ROOT / "config" / "taxonomy.toml"
@@ -24,17 +26,6 @@ REQUIRED_FIELDS = [
 REQUIRED_SECTIONS = ["Symptoms", "Conditions", "Troubleshooting steps", "Root cause", "Resolution"]
 OPTIONAL_SECTIONS = ["Lessons"]
 ID_PATTERN = re.compile(r"^CASE-\d{3}$")
-
-# Confidentiality scan (CLAUDE.md): anything that looks like real identifiers.
-_SENSITIVE_PATTERNS = {
-    "IPv4 address": re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b"),
-    "MAC address": re.compile(r"\b[0-9A-Fa-f]{2}(?:[:-][0-9A-Fa-f]{2}){5}\b"),
-    "email address": re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.-]+\b"),
-    "serial number label": re.compile(r"\b(?:SN|S/N|serial(?: no\.?| number)?)\s*[:#]?\s*(?=[A-Za-z0-9-]*\d)[A-Za-z0-9][A-Za-z0-9-]{3,}", re.IGNORECASE),
-    # Mixed letter+digit tokens with a dash, e.g. "AB12-7781"; CASE IDs are allowed.
-    "serial-like code": re.compile(r"\b(?!CASE-\d{3}\b)(?=[A-Z0-9-]*\d)(?=[A-Z0-9-]*[A-Z])[A-Z0-9]{2,}-[A-Z0-9-]{3,}\b"),
-}
-
 
 @dataclass
 class Case:
@@ -85,11 +76,12 @@ def load_cases(cases_dir: Path = DEFAULT_CASES_DIR, *, reviewed_only: bool = Fal
 
 
 def find_sensitive(text: str) -> list[str]:
-    """Return descriptions of substrings that look like confidential identifiers."""
-    hits = []
-    for label, pattern in _SENSITIVE_PATTERNS.items():
-        hits.extend(f"{label}: {m.group(0)!r}" for m in pattern.finditer(text))
-    return hits
+    """Return descriptions of substrings that look like confidential identifiers.
+
+    Uses the shared rules in privacy/patterns.py, including the owner's local
+    denylist when present.
+    """
+    return [f"{hit.kind}: {hit.value!r}" for hit in default_detector().find(text)]
 
 
 def validate_case(case: Case, taxonomy: dict[str, list[str]]) -> list[str]:

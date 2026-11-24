@@ -174,3 +174,8 @@ Decisions agreed during the v1 design review. Each entry: decision, why, alterna
 ### D-35 Add `controller_fault` alarm category
 - **Decision:** Add `controller_fault` to the alarm categories (controller resets, watchdog, internal control errors).
 - **Why:** Controller-side failures had no matching alarm category; logging them as `comm_loss` hides the real signal.
+
+### D-36 M3 privacy design
+- **Decision:** One detection rule set (`privacy/patterns.py`) shared by case validation, anonymization and the pre-send guard, extended by local-only denylist and vendor serial regexes. Device IDs become per-log pseudonyms (`DEV_n`); timestamps become relative offsets plus a coarse time-of-day bucket; values and units are kept. The guard is a `GuardedClient` wrapper that `build_cloud_client` always applies. Bad log rows are skipped with warnings; a wrong header rejects the log.
+- **Why:** A single rule set avoids gaps between modules. Time of day is diagnostic (e.g. humid mornings, hot afternoons) but not identifying, while absolute dates can be matched against outage records. Wrapping the client makes the check impossible to forget. Pseudonyms use an underscore so they never trigger the serial rule.
+- **Alternatives:** Relative time only (loses a diagnostic signal); guard as a function callers must remember to call (bypassable); reject whole logs on any bad row (too strict for field exports).

@@ -1,4 +1,8 @@
-"""Load settings and build clients. Not a router: it never decides which client a task uses."""
+"""Load settings and build clients. Not a router: it never decides which client a task uses.
+
+The cloud client is always returned wrapped in GuardedClient (D-36), so code
+using this module cannot send unchecked data to a cloud model.
+"""
 
 from __future__ import annotations
 
@@ -10,6 +14,8 @@ from pathlib import Path
 
 from llm.ollama import OllamaClient
 from llm.openai_compat import OpenAICompatClient
+from privacy.guard import GuardedClient
+from privacy.patterns import Detector, default_detector
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SETTINGS = REPO_ROOT / "config" / "settings.toml"
@@ -63,8 +69,12 @@ def load_env_file(path: Path = DEFAULT_ENV_FILE, environ: MutableMapping[str, st
             environ[key] = value
 
 
-def build_cloud_client(settings: CloudSettings, environ: MutableMapping[str, str] = os.environ) -> OpenAICompatClient:
-    return OpenAICompatClient(
+def build_cloud_client(
+    settings: CloudSettings,
+    environ: MutableMapping[str, str] = os.environ,
+    detector: Detector | None = None,
+) -> GuardedClient:
+    inner = OpenAICompatClient(
         base_url=settings.base_url,
         model=settings.model,
         api_key=environ.get(settings.api_key_env) or None,
@@ -72,6 +82,7 @@ def build_cloud_client(settings: CloudSettings, environ: MutableMapping[str, str
         max_retries=settings.max_retries,
         backoff_s=settings.backoff_s,
     )
+    return GuardedClient(inner, detector or default_detector())
 
 
 def build_local_client(settings: LocalSettings) -> OllamaClient:

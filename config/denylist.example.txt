@@ -1,0 +1,6 @@
+# Example only: fictional names. Copy to config/denylist.local.txt (never committed)
+# and list real site, customer and project names, one per line.
+# Latin terms match whole words, case-insensitive; CJK terms match as substrings.
+Riverbend Plant
+Example Energy Co
+北港示範站

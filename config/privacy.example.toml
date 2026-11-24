@@ -1,0 +1,6 @@
+# Example only. Copy to config/privacy.local.toml (never committed) and add
+# vendor-specific serial number formats. Each pattern is a Python regex.
+
+[[patterns]]
+kind = "SERIAL"
+regex = '\bXQ\d{8}\b'   # fictional format: "XQ" followed by 8 digits

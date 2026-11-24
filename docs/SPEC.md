@@ -131,9 +131,16 @@ Hard rule: if the pre-send privacy check blocks a payload, the request stays loc
 
 ## 9. Privacy
 
-- Anonymization is rule-based: regex (serial patterns, IP, MAC, email) + owner-maintained denylist. The LLM does not decide what is sensitive. (D-19)
-- Pre-send check: re-scan every cloud payload with the same rules; any hit blocks the whole request.
-- Denylist: real list at `config/denylist.local.txt` (gitignored); repo contains only `config/denylist.example.txt` with fictional entries. A test fails if any `*.local.*` file is tracked. (D-24)
+- One rule set in `privacy/patterns.py`: IP, MAC, email, serial numbers (labelled and serial-like codes), absolute dates/timestamps, plus the owner's denylist (`SITE`). Case validation, anonymization and the guard all use it. The LLM does not decide what is sensitive. (D-19, D-36)
+- Local-only configuration (gitignored by `*.local.*`): `config/denylist.local.txt` (real site/customer names; Latin terms match whole words, CJK terms as substrings) and `config/privacy.local.toml` (vendor-specific serial regexes). The repo contains only fictional `*.example.*` files. A test fails if any `*.local.*` file is tracked. (D-24)
+- `tools/parse_log.py`: parses the CSV log (D-20); bad rows are skipped with line-numbered warnings, a wrong header rejects the log.
+- `privacy/anonymizer.py`:
+  - free text (log messages and the user's description) → typed placeholders: `[SERIAL]`, `[IP]`, `[MAC]`, `[EMAIL]`, `[DATE]`, `[SITE]`;
+  - `device_id` → `DEV_1`, `DEV_2`, … stable within one log; the mapping stays in local memory only;
+  - timestamps → offset from the first event (`+HH:MM:SS`) plus a time-of-day bucket (night 00–06, morning 06–12, afternoon 12–18, evening 18–24);
+  - numeric values and units are kept.
+- Pre-send guard: `privacy/guard.py` `GuardedClient` wraps the cloud client and scans all message content and tool-call arguments before each request. Any hit raises `PrivacyBlockedError` (not retryable) and nothing is sent; the router falls back to local (D-16). `llm/config.build_cloud_client` always returns the guarded client. False positives are accepted. Errors and traces record hit kinds and counts only, never values.
+- Tests seed fake identifiers into a log and assert zero leaks in the outgoing HTTP request, and that raw data is blocked before any request.
 - Traces store anonymized content only. (D-23)
 
 ## 10. Output schema

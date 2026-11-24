@@ -1,0 +1,9 @@
+timestamp,device_id,severity,alarm_category,message,value,unit
+2026-03-02T15:40:05,PCS-01,info,bms_alarm,BMS charge current limit reduced near top of charge,80,%I_rated
+2026-03-02T15:41:12,PCS-01,warning,comm_loss,BMS link timeout,,
+2026-03-02T15:41:14,PCS-01,info,comm_loss,BMS link restored,,
+2026-03-02T15:44:30,PCS-01,info,bms_alarm,BMS charge current limit reduced,40,%I_rated
+2026-03-02T15:44:31,PCS-01,warning,comm_loss,BMS link timeout,,
+2026-03-02T15:44:33,PCS-01,warning,dc_overvoltage,DC bus voltage high,103.5,%Vdc_rated
+2026-03-02T15:44:34,PCS-01,critical,dc_overvoltage,DC overvoltage trip,105.2,%Vdc_rated
+2026-03-02T15:44:36,PCS-01,info,comm_loss,BMS link restored,,

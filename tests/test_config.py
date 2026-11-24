@@ -1,3 +1,4 @@
+from privacy.guard import GuardedClient
 from llm.config import (
     DEFAULT_SETTINGS,
     build_cloud_client,
@@ -20,16 +21,17 @@ def test_build_clients_from_settings():
     s = load_settings(DEFAULT_SETTINGS)
     cloud = build_cloud_client(s.cloud, environ={"MOONSHOT_API_KEY": "k"})
     local = build_local_client(s.local)
-    assert cloud._api_key == "k"
-    assert cloud.max_retries == s.cloud.max_retries
+    assert isinstance(cloud, GuardedClient)
+    assert cloud._inner._api_key == "k"
+    assert cloud._inner.max_retries == s.cloud.max_retries
     assert local.model == "qwen3.8:27b"
     assert local.num_ctx == 8192
 
 
 def test_missing_api_key_becomes_none():
     s = load_settings(DEFAULT_SETTINGS)
-    assert build_cloud_client(s.cloud, environ={})._api_key is None
-    assert build_cloud_client(s.cloud, environ={"MOONSHOT_API_KEY": ""})._api_key is None
+    assert build_cloud_client(s.cloud, environ={})._inner._api_key is None
+    assert build_cloud_client(s.cloud, environ={"MOONSHOT_API_KEY": ""})._inner._api_key is None
 
 
 def test_env_file(tmp_path):

@@ -66,7 +66,7 @@ def test_validation_reports_problems(tmp_path):
     errors = validate_case(parse_case(bad), TAXONOMY)
     joined = "\n".join(errors)
     for expected in ["does not match id", "symptom_component", "made_up", "reviewed must be",
-                     "section 'Conditions'", "unknown section 'Extra'", "IPv4"]:
+                     "section 'Conditions'", "unknown section 'Extra'", "IP:"]:
         assert expected in joined, expected
 
 

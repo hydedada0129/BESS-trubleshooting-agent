@@ -1,0 +1,6 @@
+timestamp,device_id,severity,alarm_category,message,value,unit
+2026-04-18T05:42:10,PCS-02,warning,insulation_fault,Insulation resistance low,,
+2026-04-18T05:50:00,PCS-02,critical,insulation_fault,Start blocked by insulation monitor,,
+2026-04-18T07:30:00,PCS-02,warning,insulation_fault,Insulation resistance low,,
+2026-04-18T09:15:00,PCS-02,info,insulation_fault,Insulation resistance recovering,,
+2026-04-18T10:20:00,PCS-02,info,insulation_fault,Insulation resistance normal; start permitted,,
