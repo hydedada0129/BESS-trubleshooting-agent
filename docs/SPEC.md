@@ -87,9 +87,16 @@ Single source of truth: `config/taxonomy.toml`. Used for metadata filtering, cas
 
 - Chunking: one case = one chunk; structured fields stored as metadata. If a case exceeds ~1,500 tokens, split by section while keeping the case ID. (D-09)
 - Hybrid retrieval: BM25 + vector search, fused with Reciprocal Rank Fusion (`score = Σ 1/(60 + rank)`); top k = 5. No reranker in v1. (D-10)
-- Embeddings: multilingual (bge-m3) so Chinese queries match English cases; runs on CPU to keep VRAM for the LLM. (D-06, D-12)
-- Vector store: Chroma.
-- `retrieval.py` is written by the owner.
+- Embeddings: multilingual bge-m3 via Ollama `/api/embed` with `num_gpu = 0` (CPU, keeps VRAM for the LLM), behind a small `Embedder` interface (`kb/embedder.py`), not `LLMClient`. Settings in `[embedding]` of `config/settings.toml`. (D-06, D-12, D-37)
+- Embedding text is symptom-side only: title, alarm categories, Symptoms, Conditions. Root cause and Resolution are excluded because queries describe symptoms. (D-37)
+- Ingest (`python -m kb.ingest`, `kb/ingest.py`): rebuilds the Chroma collection `cases` in `chroma/` from scratch; only `reviewed: true` cases; any validation failure aborts with the old index intact. Metadata: title, symptom/root-cause component, operating mode, impact, alarm categories. Chroma telemetry is disabled.
+- BM25 is built in memory by `retrieval.py` from `kb.cases.load_cases(reviewed_only=True)`. Chinese queries rarely match English cases in BM25; the vector side covers cross-language, and RRF keeps single-side hits.
+- `retrieval.py` (written by the owner) interface:
+  - `Retriever(*, cases_dir=..., chroma_path=..., embedder=None)`
+  - `search(query, *, component=None, operating_mode=None, k=5) -> list[SearchResult]`; `component` filters on `symptom_component` so misleading cases are not excluded
+  - `get_case(case_id) -> Case | None`; unreviewed cases are not retrievable
+  - `SearchResult` (`kb/search_types.py`): case_id, title, score, rank, symptom_component, root_cause_component
+- `tests/test_retrieval.py` is the contract for `retrieval.py` (skipped until the file exists); it uses `FakeEmbedder` and a temporary index.
 
 ## 6. Tools (v1)
 

@@ -19,3 +19,11 @@ think = false
 timeout_s = 120
 max_retries = 2
 backoff_s = 1.0
+
+[embedding]
+# bge-m3 via Ollama, forced onto CPU so it does not compete with the LLM for VRAM (D-12).
+host = "http://localhost:11434"
+model = "bge-m3:latest"
+num_gpu = 0
+timeout_s = 120
+batch_size = 16

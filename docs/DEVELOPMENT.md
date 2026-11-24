@@ -49,10 +49,26 @@ print(reply.content, reply.usage, reply.latency_s)
 
 For tests, use `llm.fake.FakeLLMClient` with scripted responses (`text_response`, `tool_call_response`).
 
+## Building the case index
+
+Requires Ollama running with `bge-m3:latest`. Rebuild after any case change:
+
+```
+uv run python -m kb.ingest
+```
+
+Only `reviewed: true` cases are indexed. The index lives in `chroma/` (not committed).
+
 ## Layout
 
 ```
 llm/            LLMClient interface and clients (M1)
+kb/             case loading, validation, embeddings, ingest (M2, M4)
+privacy/        detection rules, anonymizer, pre-send guard (M3)
+tools/          agent tools, e.g. parse_log (M3)
+cases/          reviewed troubleshooting cases (M2)
+samples/logs/   fictional demo logs
+retrieval.py    hybrid retrieval, written by the owner (M4)
 config/         settings.toml
 spikes/         throwaway experiments; never imported by production code (D-30)
 tests/          pytest suite
