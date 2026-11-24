@@ -1,4 +1,4 @@
-"""Contract tests for retrieval.py (written by the owner; see SPEC section 5, D-37).
+"""Contract tests for retrieval.py (see SPEC section 5, D-37, D-38).
 
 Skipped until retrieval.py exists at the repo root. Uses FakeEmbedder and a
 temporary Chroma index, so no Ollama is needed.

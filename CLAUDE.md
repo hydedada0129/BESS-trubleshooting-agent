@@ -4,7 +4,8 @@
 - Goal: BESS PCS troubleshooting agent, portfolio project. All docs in English.
 
 ## Working agreement
-- I write retrieval.py and agent.py myself. You review them, never write them.
+- I write agent.py myself. You review it, never write it.
+- retrieval.py was written by Claude at my request (D-38); I review and own it.
 - You may write boilerplate: ingest, API, Docker, tests, MCP wrapper.
 - Before any new module: ask me design questions first, then plan, then code.
 

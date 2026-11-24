@@ -68,7 +68,7 @@ privacy/        detection rules, anonymizer, pre-send guard (M3)
 tools/          agent tools, e.g. parse_log (M3)
 cases/          reviewed troubleshooting cases (M2)
 samples/logs/   fictional demo logs
-retrieval.py    hybrid retrieval, written by the owner (M4)
+retrieval.py    hybrid retrieval: BM25 + vector + RRF (M4, D-38)
 config/         settings.toml
 spikes/         throwaway experiments; never imported by production code (D-30)
 tests/          pytest suite
